@@ -158,9 +158,18 @@ button:hover {
 
 #footer {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 10px
 }
 
 #footer button + button {
-    margin-left: 10px;
+    margin-left: 10px
+}
+
+#footer .disclaimer {
+    display: none;
+    text-align: center;
+}
+
+#footer .disclaimer .legal {
+    font-size: 10px
 }

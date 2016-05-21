@@ -21,7 +21,7 @@ if (notifications.updates.length > 54) {
 	var c_c = [];
 	
 	for (var i=0; i<c.length; i++) {
-		c_c[i] = c[i].innerText.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")z;
+		c_c[i] = c[i].innerText.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 	}
 
 	var b = document.getElementsByClassName("body markdown-content");
@@ -68,4 +68,15 @@ document.getElementById("clear").onclick = function() {
 		);
 
   	}
+};
+
+document.getElementById("about").onclick = function() {
+	var disclaimer = document.getElementById("disclaimer");
+	if ( disclaimer.getAttribute("data-visible") == "0" ) {
+		disclaimer.style = "display: inline-block";
+		disclaimer.setAttribute("data-visible", "1")
+	} else {
+		disclaimer.style = "display: none";
+		disclaimer.setAttribute("data-visible", "0")
+	}
 };
