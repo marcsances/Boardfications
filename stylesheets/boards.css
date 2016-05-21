@@ -1,0 +1,166 @@
+@import url("https://s.lolstatic.com/awesomefonts/1.0.0/lol-fonts.css");
+
+body {
+    color: #94724D;
+    font-family: "Spiegel-Regular", sans-serif;
+    font-size: 14px;
+    width: 500px;
+    background-image: url("https://cdn.leagueoflegends.com/apollo/assets/blue_magic.jpg");
+    background-position: center 540px;
+    background-repeat: repeat-y
+}
+
+body a,
+body a:visited {
+    color: #94724D
+}
+
+body .byline {
+    color: #135866 !important
+}
+
+a {
+    background: transparent
+    color: #94724D;
+    text-decoration: none
+}
+
+a:focus {
+    outline: thin dotted
+}
+
+a:hover {
+    text-decoration: underline
+}
+
+a:active {
+    color: #CAB5A2
+}
+
+#my-updates {
+    padding: 0px
+}
+
+#my-updates .empty-state {
+    padding: 20px;
+    text-align: center
+}
+
+#my-updates .update-item {
+    border: 1px solid #195657;
+    /*margin-bottom: 10px;*/
+    background-color: #022127
+}
+
+#my-updates .update-item .parent-comment {
+    background-color: #01161A;
+    border-bottom: 1px solid #123a3b;
+    padding: 10px 13px 5px;
+    font-size: 12px;
+    cursor: pointer
+}
+
+#my-updates .update-item .parent-comment .content {
+    padding: 0px;
+    display: block;
+    float: left;
+    margin-right: 5px;
+    font-size: 14px;
+    line-height: 1em;
+    color: #94724D;
+    max-width: 600px
+}
+
+#my-updates .update-item span.in,
+#my-updates .update-item span.timeago {
+    font-size: 12px;
+    color: #135866
+}
+
+#my-updates .update-item .comment {
+    padding: 10px
+}
+
+#my-updates .update-item .comment .header {
+    padding-top: 5px;
+    font-size: 12px;
+    margin-bottom: 10px
+}
+
+#my-updates .update-item .comment .header .inline-profile .icon,
+#my-updates .update-item .comment .header .inline-profile .icon img {
+    width: 28px;
+    height: 28px
+}
+
+#my-updates .update-item .comment .header .inline-profile .icon {
+    margin-top: -7px
+}
+
+#my-updates .update-item .comment .body {
+    font-size: 15px;
+    line-height: 1.5em;
+    color: #B09C87;
+    padding-left: 35px;
+    max-width: 720px
+}
+
+#my-updates .update-item .comment .footer {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #707070
+}
+
+#my-updates .update-item .comment .footer a {
+    display: inline-block
+}
+
+#my-updates .update-item .comment .footer a:first-child {
+    padding-right: 10px
+}
+
+#my-updates .update-item .comment .footer a:only-child {
+    padding-right: 0px
+}
+
+button {
+    /*display: block;*/
+    background-color: #553621;
+    font-family: "Constantia", "Palatino", "Georgia", serif;
+    font-variant: small-caps;
+    color: #CAB5A2;
+    /*font-size: 18px;
+    padding: 10px 0px;*/
+
+    letter-spacing: 1px;
+    border: 1px solid black;
+    outline: 1px solid #553621;
+    text-align: center
+    line-height: normal;
+
+    text-transform: none;
+
+    /*font-family: inherit;
+    font-size: 100%;*/
+    margin: 0;
+
+    font-size: 12px;
+    padding: 10px 20px;
+
+    -webkit-appearance: button;
+    cursor: pointer;
+}
+
+button:hover {
+    outline: 1px solid #CAB5A2;
+    text-decoration: none
+}
+
+#footer {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+#footer button + button {
+    margin-left: 10px;
+}
