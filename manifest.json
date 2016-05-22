@@ -1,7 +1,7 @@
 {
   "name": "Boardfications",
 
-  "version": "0.2",
+  "version": "0.2.1",
 
   "description": "Manage and get notified about your League of Legends Boards' notifications!",
 
@@ -38,7 +38,6 @@
   "web_accessible_resources": [
     "images/icon48.png"
   ],
-
   "update_url": "http://aresmta.github.io/boardfications/updates.xml"
 } 
 

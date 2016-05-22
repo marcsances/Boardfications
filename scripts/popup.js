@@ -16,7 +16,7 @@ if (notifications.updates.length > 54) {
 			a[i].setAttribute('href', "http://boards.las.leagueoflegends.com"+cur);
 		}
 	}
-
+	
 	var c = document.getElementsByClassName("content");
 	var c_c = [];
 	
@@ -25,7 +25,6 @@ if (notifications.updates.length > 54) {
 	}
 
 	var b = document.getElementsByClassName("body markdown-content");
-
 	for(var i=0; i<b.length; i++) {
 		if ( b[i].innerText.search(c_c[i]) != -1 ) {
 			b[i].innerText = b[i].innerText.replace(c_c[i], "");
