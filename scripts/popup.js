@@ -4,6 +4,7 @@ var regex = [
 	[/{{.+?}}/g, ""]
 ];
 
+// 54 bytes = empty/base json
 if (notifications.updates.length > 54) {
 
 	document.getElementById("my-updates").innerHTML = notifications.updates;

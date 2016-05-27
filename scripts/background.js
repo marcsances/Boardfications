@@ -1,5 +1,5 @@
 notifications = "blank";
-notifications_cache = "blank";
+notifications_c = "blank";
 options = [];
 
   document.addEventListener("DOMContentLoaded", function() {
@@ -26,13 +26,35 @@ options = [];
 			    } else {
 			    	return 0;
 			    }
+
 			    if ( options['enableNotifications'] ) {
-				    if ( isArray(notifications_cache) && isArray(notifications) && unread_notif != "0") {
-				    	if ( notifications_cache.updates != notifications.updates && notifications.updates.length > 0 ) {
-				    		submitNotification();
+				    // Bugfix #1
+				    if ( isArray(notifications_c) && isArray(notifications) && unread_notif != "0") {
+				    	if ( a || b ) {
+				    		    a.parentNode.removeChild(a);
+				    		    b.parentNode.removeChild(b);
 				    	}
+
+				    	// Prevent images from loading and taking unnecesary resources
+				    	var noimage = notifications.updates.replace(/<img\b[^>]*>/ig, '');
+				    	var noimage_c = notifications_c.updates.replace(/<img\b[^>]*>/ig, '');
+
+					    var a = document.createElement("html"); a.innerHTML = noimage;
+					    a = a.getElementsByClassName("body markdown-content");
+					    var b = document.createElement("html"); b.innerHTML = noimage_c;
+					    b = b.getElementsByClassName("body markdown-content");
+
+				    	for (i=0; i<a.length; i++) {
+				    		if ( a[i] && a[i].textContent ) {
+				    			if ( (!b[i] || !b[i].textContent) || (a[i].textContent != b[i].textContent) ) {
+				    				submitNotification(i);
+				    				console.log("diff " + i);
+				    				break;
+				    			}
+				    		}
+				  		}
 				    }
-				    notifications_cache = notifications;
+				    notifications_c = notifications;
 			    }
 		  	}
 		  }
@@ -65,9 +87,10 @@ options = [];
 		return typeof object === "object";
 	}
 
-	var submitNotification = function () {
-		var dummydiv = document.createElement("html"); dummydiv.innerHTML = notifications.updates;
-		var message = dummydiv.getElementsByClassName("body markdown-content")[0].innerText.trim().substring(0, 125) + " ...";
+	var submitNotification = function (index) {
+		var index = index || 0;
+		var dummydiv = document.createElement("html"); dummydiv.innerHTML = notifications.updates.replace(/<img\b[^>]*>/ig, '');
+		var message = dummydiv.getElementsByClassName("body markdown-content")[index].innerText.trim().substring(0, 125) + " ...";
 		var url = dummydiv.getElementsByTagName("a")[2].getAttribute("href");
 		var options = {
 			title: "You have a new notification!",
