@@ -1,7 +1,7 @@
 {
   "name": "Boardfications",
 
-  "version": "0.2.4",
+  "version": "0.2.5",
 
   "description": "Manage and get notified about your League of Legends Boards' notifications!",
 
@@ -26,7 +26,6 @@
   "permissions": [
     "http://boards.las.leagueoflegends.com/",
     "notifications",
-    "tabs",
     "storage"
   ],
 
