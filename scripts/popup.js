@@ -54,19 +54,12 @@ document.getElementById("clear").onclick = function() {
 			url: url,
 			active: false
 		};
+
 		chrome.tabs.create(options,
 			function (tabId) {
-				tempId = tabId.id
+				chrome.extension.getBackgroundPage().popup_Clear(tabId.id);
 			}
 		);
-		chrome.tabs.onUpdated.addListener(
-			function(tabId, info) {
-				if (tabId == tempId && info.status == "complete") {
-					chrome.tabs.remove(tempId);
-				}
-			}
-		);
-
   	}
 };
 

@@ -2,8 +2,8 @@ notifications = "blank";
 notifications_c = "blank";
 options = [];
 
-  document.addEventListener("DOMContentLoaded", function() {
-
+document.addEventListener("DOMContentLoaded", function() {
+	
 	var updateNotifications = function () {
 		var xhr = new XMLHttpRequest();
 		var resp = undefined;
@@ -64,11 +64,11 @@ options = [];
 		}
 		if (!navigator.onLine) { xhr.ontimeout(); } else { xhr.send(); }
 		updateTimer();
-	}
+	};
 
 	var updateTimer = function () {
 		setTimeout(updateNotifications, options['updateDelay']*1000);
-	}
+	};
 
 	var updateBadge = function (text, error) {
 		if ( error ) {
@@ -81,11 +81,11 @@ options = [];
 			}
 		}
 		chrome.browserAction.setBadgeText({text: text});
-	}
+	};
 
 	var isArray = function (object) {
 		return typeof object === "object";
-	}
+	};
 
 	var submitNotification = function (index) {
 		var index = index || 0;
@@ -101,18 +101,18 @@ options = [];
 			isClickable: true
 		};
 		chrome.notifications.create("boardfication_"+url, options);
-	}
+	};
 
 	var getOptions = function () {
 		chrome.storage.sync.get({
-    		updateDelay: 15,
+    		updateDelay: 10,
     		enableNotifications: true
   		}, function(items) {
     		options['updateDelay'] = items.updateDelay;
     		options['enableNotifications'] = items.enableNotifications;
   		   }
   		);
-	}
+	};
 
 	chrome.notifications.onClicked.addListener( function (id) {
 		if ( id.search("boardfication") != -1 ) {
@@ -125,6 +125,18 @@ options = [];
 			chrome.tabs.create(options);
 		}
 	});
+
+	// Bugfix #2
+	popup_Clear = function (id) {
+		tempId = id;
+		chrome.tabs.onUpdated.addListener(
+			function(tabId, info) {
+				if (tabId == tempId && info.status == "complete") {
+					chrome.tabs.remove(tempId);
+				}
+			}
+		);
+	};
 
 	updateBadge("...", true);
 	getOptions();
