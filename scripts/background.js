@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			if ( text == "0" ) {
 				chrome.browserAction.setBadgeBackgroundColor({ color: [20, 20, 255, 255] });
 			} else {
-				chrome.browserAction.setBadgeBackgroundColor({ color: [0, 106, 0, 255] });
+				chrome.browserAction.setBadgeBackgroundColor({ color: [0, 150, 0, 255] });
 			}
 		}
 		chrome.browserAction.setBadgeText({text: text});
