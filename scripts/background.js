@@ -72,12 +72,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	var updateBadge = function (text, error) {
 		if ( error ) {
-			chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+			chrome.browserAction.setBadgeBackgroundColor({ color: [255, 20, 20, 255] });
 		} else {
 			if ( text == "0" ) {
-				chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 255, 255] });
+				chrome.browserAction.setBadgeBackgroundColor({ color: [20, 20, 255, 255] });
 			} else {
-				chrome.browserAction.setBadgeBackgroundColor({ color: [0, 255, 0, 255] });
+				chrome.browserAction.setBadgeBackgroundColor({ color: [0, 106, 0, 255] });
 			}
 		}
 		chrome.browserAction.setBadgeText({text: text});
