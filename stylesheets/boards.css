@@ -117,6 +117,14 @@ a:active {
     padding-right: 0px
 }
 
+#my-updates .riot-fist { 
+	background-image:url("http://boards.las.leagueoflegends.com/images/sprite-master-f092f118123c35787b367f855ea0125b.png") !important;
+	background-position:-444px -41px !important;
+	width:16px !important;
+	height:16px !important;
+	background-size:auto !important
+}
+
 button {
     /*display: block;*/
     background-color: #553621;
