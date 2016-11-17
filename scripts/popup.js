@@ -1,8 +1,11 @@
 var notifications = chrome.extension.getBackgroundPage().notifications;
+var champions = chrome.extension.getBackgroundPage().champions;
+
+console.log(champions)
 var regex = [
-	[/(\>) (\[){.+?(> >)/g, ""],
-	[/champion:(\d+)/g, "", "champion"]
-	[/{{.+?}}/g, ""]
+	//[/(\>) (\[){.+?(> >)/g, ""],
+	[/(champion):(\d+)/g, "", "champion"]
+	//[/{{.+?}}/g, ""]
 ];
 
 // 54 bytes = empty/base json
@@ -36,9 +39,12 @@ if (notifications.updates.length > 54) {
 			if ( cur.search(regex[k][0]) != -1 ) {
 				if ( regex[k][2] ) { // replace with champions icon
 					if ( regex[k][2] == "champion" ) {
-						var champion_id = cur.match(regex[k][0])[2]
+						console.log("a")
+						var to_replace = cur.match(regex[k][0])[0]
+						var champion_id = to_replace.match(/(champion):(\d+)/)[2]
 						var champion_name = champions[champion_id]
-						b[i].innerText = cur.replace(regex[k][0], "<img src='http://ddragon.leagueoflegends.com/cdn/6.22.1/img/champion/"+ champion_name + ".png' </img>");
+						console.log(champion_name)
+						b[i].innerHTML = cur.replace("{{"+to_replace+"}}", "<img class='champion-icon' src='http://ddragon.leagueoflegends.com/cdn/6.22.1/img/champion/"+ champion_name + ".png' </img>");
 						continue;
 					}
 				}
