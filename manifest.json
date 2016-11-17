@@ -20,7 +20,7 @@
   "incognito": "split",
 
   "background": {
-    "scripts": ["scripts/background.js", "scripts/static.js"]
+    "scripts": ["scripts/background.js"]
   },
 
   "permissions": [
