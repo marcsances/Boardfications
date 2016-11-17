@@ -38,7 +38,7 @@ if (notifications.updates.length > 54) {
 					if ( regex[k][2] == "champion" ) {
 						var champion_id = cur.match(regex[k][0])[2]
 						var champion_name = champions[champion_id]
-						b[i].innerText = cur.replace(regex[k][0], "<img src='http://ddragon.leagueoflegends.com/cdn/6.22.1/img/champion/"+ champion_name + ".png' </img>);
+						b[i].innerText = cur.replace(regex[k][0], "<img src='http://ddragon.leagueoflegends.com/cdn/6.22.1/img/champion/"+ champion_name + ".png' </img>");
 						continue;
 					}
 				}
