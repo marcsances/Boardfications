@@ -120,9 +120,14 @@ a:active {
 #my-updates .riot-fist { 
 	background-image:url("http://boards.las.leagueoflegends.com/images/sprite-master-f092f118123c35787b367f855ea0125b.png") !important;
 	background-position:-444px -41px !important;
-	width:16px !important;
-	height:16px !important;
+	width:32px !important;
+	height:32px !important;
 	background-size:auto !important
+}
+
+#my-updates .champion-icon { 
+	width:32px;
+	height:32px
 }
 
 button {
