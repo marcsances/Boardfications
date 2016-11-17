@@ -2,7 +2,7 @@
 // http://ddragon.leagueoflegends.com/cdn/6.22.1/data/en_US/champion.json
 // for(var k in str['data']) { console.log( "list["+str['data'][k]['key'] + "] = '" + str['data'][k]['id'] +"'") }
 
-var champions = []
+champions = []
 
 champions[266] = 'Aatrox'
 champions[103] = 'Ahri'
