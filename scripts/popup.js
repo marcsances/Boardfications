@@ -1,6 +1,7 @@
 var notifications = chrome.extension.getBackgroundPage().notifications;
 var regex = [
 	[/(\>) (\[){.+?(> >)/g, ""],
+	[/champion:(\d+)/g, "", "champion"]
 	[/{{.+?}}/g, ""]
 ];
 
@@ -33,6 +34,14 @@ if (notifications.updates.length > 54) {
 		for(var k=0; k<regex.length; k++) {
 			var cur = b[i].innerText;
 			if ( cur.search(regex[k][0]) != -1 ) {
+				if ( regex[k][2] ) { // replace with champions icon
+					if ( regex[k][2] == "champion" ) {
+						var champion_id = cur.match(regex[k][0])[2]
+						var champion_name = champions[champion_id]
+						b[i].innerText = cur.replace(regex[k][0], "<img src='http://ddragon.leagueoflegends.com/cdn/6.22.1/img/champion/"+ champion_name + ".png' </img>);
+						continue;
+					}
+				}
 				b[i].innerText = cur.replace(regex[k][0], regex[k][1]);
 			}
 		}
@@ -41,9 +50,9 @@ if (notifications.updates.length > 54) {
 
 document.getElementById("settings").onclick = function() {
   	if (chrome.runtime.openOptionsPage) {
-    	chrome.runtime.openOptionsPage();
+    		chrome.runtime.openOptionsPage();
   	} else {
-    	window.open(chrome.runtime.getURL('options.html'));
+    		window.open(chrome.runtime.getURL('options.html'));
   	}
 };
 
