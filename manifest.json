@@ -1,44 +1,34 @@
 {
   "name": "Boardfications",
-
-  "version": "0.2.5",
-
+  "version": "0.2.8",
   "description": "Manage your League Boards' notifications!",
-
   "browser_action": {
       "default_title": "Boardfications",
       "default_icon": "images/icon.png",
       "default_popup": "documents/popup.html"
   },
-
   "icons": { 
   	   "16": "images/icon.png",
   	   "48": "images/icon48.png"
   },
-
   "manifest_version": 2,
   "incognito": "split",
-
   "background": {
-    "scripts": ["scripts/background.js"]
+	  "scripts": [
+			"scripts/background.js"
+		]
   },
-
   "permissions": [
     "http://boards.las.leagueoflegends.com/",
     "notifications",
-    "storage"
+    "storage",
+	"cookies"
   ],
-
   "options_ui": {
     "page": "documents/options/options.html",
     "chrome_style": true
   },
-
   "web_accessible_resources": [
     "images/icon48.png"
-  ],
-  "update_url": "http://ares-c.github.io/Boardfications/updates.xml"
-} 
-
-
-
+  ]
+}

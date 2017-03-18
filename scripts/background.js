@@ -1,13 +1,14 @@
-notifications = "blank";
-notifications_c = "blank";
+notifications = [];
+exists = [];
+
 options = [];
+	
+notification = false;
 
 document.addEventListener("DOMContentLoaded", function() {
-	
 	var updateNotifications = function () {
 		var xhr = new XMLHttpRequest();
-		var resp = undefined;
-
+		
 		xhr.open("GET", "http://boards.las.leagueoflegends.com/es/myupdates.json?show=unread", true);
 		xhr.timeout = 5000;
 		xhr.onreadystatechange = function() {
@@ -20,42 +21,65 @@ document.addEventListener("DOMContentLoaded", function() {
 			    };
 
 			    if (resp != undefined) {
-			    	notifications = resp;
+			    	var cache = resp;
 			    	var unread_notif = String(resp.searchResultsCount) || String(resp.resultsCount);
 			    	updateBadge(unread_notif);
-			    } else {
-			    	return 0;
 			    }
 
-			    if ( options['enableNotifications'] ) {
-				    // Bugfix #1
-				    if ( isArray(notifications_c) && isArray(notifications) && unread_notif != "0") {
-				    	if ( a || b ) {
-				    		    a.parentNode.removeChild(a);
-				    		    b.parentNode.removeChild(b);
-				    	}
+				var cache = cache.updates.replace(/<img\b[^>]*>/ig, '');
+				var cache = cache.replace(/href="(.*?)(?=".*?)/ig, 'href="http://boards.las.leagueoflegends.com$1');
+				
+				var html = document.createElement("html"); html.innerHTML = cache;
+				
+				var a = html.getElementsByClassName("update-item");
+				
+				for(var i = 0; i<a.length; i++) {
+					var item = a[i];
+					
+					var board = item.getAttribute("data-application-id");
+					var discussion = item.getAttribute("data-discussion-id");
+					var comment = item.getAttribute("data-comment-id");
+					
+					var parentComment = (item.children[0].getElementsByClassName("content")[0].textContent).trim(); //dont save
+					var parentDiscussion = item.children[0].getElementsByTagName("a")[0].textContent;
+					var parentDiscussion_url = item.children[0].getElementsByTagName("a")[0].href;
+					
+					var profile_url = item.children[1].getElementsByClassName("header byline clearfix")[0].getElementsByClassName("inline-profile ")[0].getElementsByTagName("a")[0].href;
+					var profile_sn = item.children[1].getElementsByClassName("header byline clearfix")[0].getElementsByClassName("inline-profile ")[0].getElementsByClassName("username")[0].textContent;
+					var server = item.children[1].getElementsByClassName("header byline clearfix")[0].getElementsByClassName("inline-profile ")[0].getElementsByClassName("realm")[0].textContent;
+					var timeago = item.children[1].getElementsByClassName("header byline clearfix")[0].getElementsByClassName("timeago")[0].title;
+					var url = item.children[1].getElementsByClassName("footer")[0].getElementsByClassName("right")[0].getElementsByTagName("a")[0].href;
+					
+					var isRioter = (typeof item.children[1].getElementsByClassName("header byline clearfix")[0].getElementsByClassName("inline-profile isRioter")[0] !== "undefined" && true || false);
+					var whole = item.children[1].getElementsByClassName("body markdown-content")[0];
+					
+					if (!whole) { //message deleted
+						whole = "Content deleted"; 
+					} else {
+						whole = whole.textContent;
+					}
+					
+					var message = (whole.split(parentComment)[1] || whole).trim();
+					
+					exists[`${discussion}:${comment}`] = true;
+					if (!notifications[discussion+":"+comment]) {
+						notifications[`${discussion}:${comment}`] = [board, discussion, comment, parentDiscussion, parentDiscussion_url, profile_url, profile_sn, server, timeago, url, message, isRioter];
+						
+						if (notification === true && options["enableNotifications"]) {
+							submitNotification(message, url)
+						}
+					}
+				}
 
-				    	// Prevent images from loading and taking unnecesary resources
-				    	var noimage = notifications.updates.replace(/<img\b[^>]*>/ig, '');
-				    	var noimage_c = notifications_c.updates.replace(/<img\b[^>]*>/ig, '');
-
-					    var a = document.createElement("html"); a.innerHTML = noimage;
-					    a = a.getElementsByClassName("body markdown-content");
-					    var b = document.createElement("html"); b.innerHTML = noimage_c;
-					    b = b.getElementsByClassName("body markdown-content");
-
-				    	for (i=0; i<a.length; i++) {
-				    		if ( a[i] && a[i].textContent ) {
-				    			if ( (!b[i] || !b[i].textContent) || (a[i].textContent != b[i].textContent) ) {
-				    				submitNotification(i);
-				    				console.log("diff " + i);
-				    				break;
-				    			}
-				    		}
-				  		}
-				    }
-				    notifications_c = notifications;
-			    }
+				for (key in notifications) {
+					n = exists[key];
+					if (!n) {
+						notifications[key] = undefined;
+						exists[key] = undefined;
+					}
+				}
+				notification = true;
+				exists = [];
 		  	}
 		  }
 		}
@@ -63,6 +87,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			updateBadge("ERR", true)
 		}
 		if (!navigator.onLine) { xhr.ontimeout(); } else { xhr.send(); }
+		chrome.cookies.get( 
+			{ url : "http://boards.las.leagueoflegends.com", name: "APOLLO_TOKEN"},
+			function (ck) {
+				if ( ck ) {
+					cookie = ck.value
+				}
+			}
+		);
 		updateTimer();
 	};
 
@@ -87,11 +119,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		return typeof object === "object";
 	};
 
-	var submitNotification = function (index) {
-		var index = index || 0;
-		var dummydiv = document.createElement("html"); dummydiv.innerHTML = notifications.updates.replace(/<img\b[^>]*>/ig, '');
-		var message = dummydiv.getElementsByClassName("body markdown-content")[index].innerText.trim().substring(0, 125) + " ...";
-		var url = dummydiv.getElementsByTagName("a")[2].getAttribute("href");
+	var submitNotification = function (message, url) {
+		message = (message.length > 128 && message.substring(0, 128-3) + "..." || message)
 		var options = {
 			title: "You have a new notification!",
 			message: message,
@@ -100,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			iconUrl: "images/icon48.png",
 			isClickable: true
 		};
-		chrome.notifications.create("boardfication_"+url, options);
+		chrome.notifications.create("Boardfications_"+url, options);
 	};
 
 	var getOptions = function () {
@@ -115,9 +144,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 
 	chrome.notifications.onClicked.addListener( function (id) {
-		if ( id.search("boardfication") != -1 ) {
+		if ( id.search("Boardfications_") != -1 ) {
 			chrome.notifications.clear(id);
-			var url = "http://boards.las.leagueoflegends.com"+id.replace("boardfication_", "");
+			var url = id.replace("Boardfications_", "");
 			var options = {
 				url: url,
 				active: true
@@ -126,160 +155,30 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 
-	// Bugfix #2
-	popup_Clear = function (id) {
-		tempId = id;
-		chrome.tabs.onUpdated.addListener(
-			function(tabId, info) {
-				if (tabId == tempId && info.status == "complete") {
-					chrome.tabs.remove(tempId);
-				}
+	setAsRead = function (comments) {
+		comments["apolloToken"] = cookie;
+		var xhr = new XMLHttpRequest();		
+		xhr.open('PUT', 'http://boards.las.leagueoflegends.com/api/myupdates');
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		xhr.onload = function() {
+			if (xhr.status === 200) {
+				updateNotifications();
 			}
-		);
+		};
+		xhr.send(serialize(comments));
 	};
+	
+	serialize = function(obj) {
+		var str = [];
+		for(var p in obj)
+			if (obj.hasOwnProperty(p)) {
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+			}
+		return str.join("&");
+	}
 
 	updateBadge("...", true);
 	getOptions();
 	updateNotifications();
-	
-// Retrieve champion ID from champion key
-// http://ddragon.leagueoflegends.com/cdn/6.22.1/data/en_US/champion.json
-// for(var k in str['data']) { console.log( "list["+str['data'][k]['key'] + "] = '" + str['data'][k]['id'] +"'") }
-
-champions = []
-
-champions[266] = 'Aatrox'
-champions[103] = 'Ahri'
-champions[84] = 'Akali'
-champions[12] = 'Alistar'
-champions[32] = 'Amumu'
-champions[34] = 'Anivia'
-champions[1] = 'Annie'
-champions[22] = 'Ashe'
-champions[136] = 'AurelionSol'
-champions[268] = 'Azir'
-champions[432] = 'Bard'
-champions[53] = 'Blitzcrank'
-champions[63] = 'Brand'
-champions[201] = 'Braum'
-champions[51] = 'Caitlyn'
-champions[69] = 'Cassiopeia'
-champions[31] = 'Chogath'
-champions[42] = 'Corki'
-champions[122] = 'Darius'
-champions[131] = 'Diana'
-champions[119] = 'Draven'
-champions[36] = 'DrMundo'
-champions[245] = 'Ekko'
-champions[60] = 'Elise'
-champions[28] = 'Evelynn'
-champions[81] = 'Ezreal'
-champions[9] = 'FiddleSticks'
-champions[114] = 'Fiora'
-champions[105] = 'Fizz'
-champions[3] = 'Galio'
-champions[41] = 'Gangplank'
-champions[86] = 'Garen'
-champions[150] = 'Gnar'
-champions[79] = 'Gragas'
-champions[104] = 'Graves'
-champions[120] = 'Hecarim'
-champions[74] = 'Heimerdinger'
-champions[420] = 'Illaoi'
-champions[39] = 'Irelia'
-champions[427] = 'Ivern'
-champions[40] = 'Janna'
-champions[59] = 'JarvanIV'
-champions[24] = 'Jax'
-champions[126] = 'Jayce'
-champions[202] = 'Jhin'
-champions[222] = 'Jinx'
-champions[429] = 'Kachampionsa'
-champions[43] = 'Karma'
-champions[30] = 'Karthus'
-champions[38] = 'Kassadin'
-champions[55] = 'Katarina'
-champions[10] = 'Kayle'
-champions[85] = 'Kennen'
-champions[121] = 'Khazix'
-champions[203] = 'Kindred'
-champions[240] = 'Kled'
-champions[96] = 'KogMaw'
-champions[7] = 'Leblanc'
-champions[64] = 'LeeSin'
-champions[89] = 'Leona'
-champions[127] = 'Lissandra'
-champions[236] = 'Lucian'
-champions[117] = 'Lulu'
-champions[99] = 'Lux'
-champions[54] = 'Malphite'
-champions[90] = 'Malzahar'
-champions[57] = 'Maokai'
-champions[11] = 'MasterYi'
-champions[21] = 'MissFortune'
-champions[62] = 'MonkeyKing'
-champions[82] = 'Mordekaiser'
-champions[25] = 'Morgana'
-champions[267] = 'Nami'
-champions[75] = 'Nasus'
-champions[111] = 'Nautilus'
-champions[76] = 'Nidalee'
-champions[56] = 'Nocturne'
-champions[20] = 'Nunu'
-champions[2] = 'Olaf'
-champions[61] = 'Orianna'
-champions[80] = 'Pantheon'
-champions[78] = 'Poppy'
-champions[133] = 'Quinn'
-champions[33] = 'Rammus'
-champions[421] = 'RekSai'
-champions[58] = 'Renekton'
-champions[107] = 'Rengar'
-champions[92] = 'Riven'
-champions[68] = 'Rumble'
-champions[13] = 'Ryze'
-champions[113] = 'Sejuani'
-champions[35] = 'Shaco'
-champions[98] = 'Shen'
-champions[102] = 'Shyvana'
-champions[27] = 'Singed'
-champions[14] = 'Sion'
-champions[15] = 'Sivir'
-champions[72] = 'Skarner'
-champions[37] = 'Sona'
-champions[16] = 'Soraka'
-champions[50] = 'Swain'
-champions[134] = 'Syndra'
-champions[223] = 'TahmKench'
-champions[163] = 'Taliyah'
-champions[91] = 'Talon'
-champions[44] = 'Taric'
-champions[17] = 'Teemo'
-champions[412] = 'Thresh'
-champions[18] = 'Tristana'
-champions[48] = 'Trundle'
-champions[23] = 'Tryndamere'
-champions[4] = 'TwistedFate'
-champions[29] = 'Twitch'
-champions[77] = 'Udyr'
-champions[6] = 'Urgot'
-champions[110] = 'Varus'
-champions[67] = 'Vayne'
-champions[45] = 'Veigar'
-champions[161] = 'Velkoz'
-champions[254] = 'Vi'
-champions[112] = 'Viktor'
-champions[8] = 'Vladimir'
-champions[106] = 'Volibear'
-champions[19] = 'Warwick'
-champions[101] = 'Xerath'
-champions[5] = 'XinZhao'
-champions[157] = 'Yasuo'
-champions[83] = 'Yorick'
-champions[154] = 'Zac'
-champions[238] = 'Zed'
-champions[115] = 'Ziggs'
-champions[26] = 'Zilean'
-champions[143] = 'Zyra'
-
 });
+
