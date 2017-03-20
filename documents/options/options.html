@@ -1,20 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/options/options.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/stylesheets/options/options.css"> -->
 </head>
 
 <body>
-    Update each 
-    <input type="number" id="updateDelay" min="10" max="60">
-    seconds<br></br>
-    <label>
-      <input type="checkbox" id="enableNotifications">
-      Enable notifications
-    </label><br></br>
-  <button id="save">Save</button>
-  <div id="status"></div>
-  <script src="/scripts/options/options.js"></script>
+	<div id="options"> </br>
+		<div id="container">
+
+			<span data-i18n="true">options_region</span>                  
+			<select id="region">
+				<option value="las">LAS</option>
+				<option value="na">NA</option>
+				<option value="euw">EUW</option>
+				<option value="eune">EUNE</option>
+				<option value="lan">LAN</option>
+				<option value="br">BR</option>
+				<option value="jp">JP</option>
+				<option value="ru">RU</option>
+				<option value="tr">TR</option>
+				<option value="oce">OCE</option>
+				<option value="kr">KR</option>
+			</select><br></br>
+			
+			<span data-i18n="true">options_ue</span>
+				<input type="number" id="updateDelay" min="10" max="60">
+				<span data-i18n="true">options_seconds</span>
+			<br></br>
+			
+			<label>
+				<input type="checkbox" id="enableNotifications">
+				<span data-i18n="true">options_en</span>
+			</label><br></br>
+
+		</div>
+		<div id="footer">
+			<button id="save" class="button" data-i18n="true">options_save</button><br></br>
+			<div id="status"></div>
+		</div>
+	</div>
+	<script src="/scripts/options/options.js"></script>
 </body>
 
 </html>

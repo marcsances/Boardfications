@@ -1,12 +1,11 @@
-setTimeout(function() { 
-
 var linkTag = document.createElement ("link"); linkTag.href = "/stylesheets/boards.css"; linkTag.rel = "stylesheet";
 document.getElementsByTagName("head")[0].appendChild(linkTag);
 
-setTimeout(function(){document.body.style = "visibility:visible"}, 500)
+setTimeout(function(){apply_i18n_to_popup(); document.body.style = "visibility:visible"}, 50)
 
 var notifications = chrome.extension.getBackgroundPage().notifications;
 var champions = chrome.extension.getBackgroundPage().champions;
+var getRegion = function () { return chrome.extension.getBackgroundPage().getRegion(); };
 
 if ( Object.keys(notifications).length > 0) {
 	
@@ -28,12 +27,15 @@ if ( Object.keys(notifications).length > 0) {
 			var message = item[10];
 			var isRioter = item[11];
 			
-			var avatar = isRioter && `/images/riot_fist.png` || `https://avatar.leagueoflegends.com/las/${encodeURIComponent(profile_sn)}.png`;
+			var avatar = isRioter && `/images/riot_fist.png` || `https://avatar.leagueoflegends.com/${getRegion()}/${encodeURIComponent(profile_sn)}.png`;
 			var fontcolor = isRioter && `<font color=#ae250f> ${profile_sn} </font>` || profile_sn;
+			var gotocomment = chrome.i18n.getMessage("main_gtc");
+			var _in = chrome.i18n.getMessage("main_in");
+			
 			source = source + 
 			`<div class='update-item' data-application-id=${board} data-discussion-id=${discussion} data-comment-id=${comment}>
 				<div class='parent-comment'> 
-					<span class='in'>en</span> 
+					<span>${_in}</span> 
 					<a href=${parentDiscussion_url} target='_blank'>${parentDiscussion}</a> 
 				</div>
 				<div class='comment clearfix'> 
@@ -58,7 +60,7 @@ if ( Object.keys(notifications).length > 0) {
 					</div> 
 					<div class='footer'>
 						<div class='right'>
-							<a href=${url} target='_blank'>Ir a comentario</a>
+							<a href=${url} target='_blank'>${gotocomment}</a>
 						</div> 
 					</div> 
 				</div> 
@@ -104,4 +106,16 @@ document.getElementById("about").onclick = function() {
 		disclaimer.style = "display: none";
 	}
 };
-}, 0.1)
+
+function apply_i18n_to_popup (){
+	var objects = document.getElementsByTagName("*");
+	
+	for (var i=0, max=objects.length; i < max; i++) {
+		var object = objects[i];
+		if (object && object.getAttribute("data-i18n") == "true") {
+			var message = chrome.i18n.getMessage(object.innerHTML.trim());
+			object.innerText = message;
+		}
+	}
+}
+
