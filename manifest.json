@@ -1,6 +1,6 @@
 ﻿{
   "name": "Boardfications",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "default_locale": "en",
   "description": "Manage your League Boards' notifications!",
   "browser_action": {
@@ -20,12 +20,11 @@
 		]
   },
   "permissions": [
-    "http://boards.las.leagueoflegends.com/",
+    "*://*.leagueoflegends.com/",
     "notifications",
     "storage",
 	"cookies"
   ],
-  "optional_permissions": ["http://*.leagueoflegends.com/"],
   "options_ui": {
     "page": "documents/options/options.html",
 	"open_in_tab": true

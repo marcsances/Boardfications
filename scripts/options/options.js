@@ -13,9 +13,7 @@ function onDocumentLoad() {
 		document.getElementById('updateDelay').value = items.updateDelay;
 		document.getElementById('enableNotifications').checked = items.enableNotifications;
 		document.getElementById('region').value = items.region
-	});
-	
-	
+	});	
 }
 document.addEventListener('DOMContentLoaded', onDocumentLoad);
 
@@ -59,7 +57,7 @@ document.getElementById('save').addEventListener('click', save_options);
 
 function checkPermissions(region) {
 	chrome.permissions.contains({
-	  origins: [`http://boards.${region}.leagueoflegends.com/`]
+	  origins: [`https://boards.${region}.leagueoflegends.com/`]
 	}, function (permission) {
 		if (!permission) {
 			askForPermissions(region);
@@ -69,7 +67,7 @@ function checkPermissions(region) {
 
 function askForPermissions(region) {
 	chrome.permissions.request({
-		origins: [`http://boards.${region}.leagueoflegends.com/`]
+		origins: [`https://boards.${region}.leagueoflegends.com/`]
 		}, function(granted) {
 			if (!granted) {
 				var message = chrome.i18n.getMessage("options_permissions")

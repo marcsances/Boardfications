@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	var updateNotifications = function () {
 		var xhr = new XMLHttpRequest();
 		
-		xhr.open("GET", `http://boards.${getRegion()}.leagueoflegends.com/${language}/myupdates.json?show=unread`, true);
+		xhr.open("GET", `https://boards.${getRegion()}.leagueoflegends.com/${language}/myupdates.json?show=unread`, true);
 		xhr.timeout = 5000;
 		xhr.onreadystatechange = function() {
 		  if (xhr.readyState == 4) {
 		  	if (xhr.status === 200) {
-				if (xhr.responseURL == `http://boards.${getRegion()}.leagueoflegends.com/${language}/myupdates.json?show=unread`) {
+				if (xhr.responseURL == `https://boards.${getRegion()}.leagueoflegends.com/${language}/myupdates.json?show=unread`) {
 					try {
 						resp = JSON.parse(xhr.responseText);
 					} catch(e) {
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					}
 
 					var cache = cache.updates.replace(/<img\b[^>]*>/ig, '');
-					var cache = cache.replace(/href="(.*?)(?=".*?)/ig, `href="http://boards.${getRegion()}.leagueoflegends.com$1`);
+					var cache = cache.replace(/href="(.*?)(?=".*?)/ig, `href="https://boards.${getRegion()}.leagueoflegends.com$1`);
 					
 					var html = document.createElement("html"); html.innerHTML = cache;
 					
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		if (!navigator.onLine) { xhr.ontimeout(); } else { xhr.send(); }
 		chrome.cookies.get( 
-			{ url : `http://boards.${getRegion()}.leagueoflegends.com`, name: "APOLLO_TOKEN"},
+			{ url : `https://boards.${getRegion()}.leagueoflegends.com`, name: "APOLLO_TOKEN"},
 			function (ck) {
 				if ( ck ) {
 					cookie = ck.value
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	setAsRead = function (comments) {
 		comments["apolloToken"] = cookie;
 		var xhr = new XMLHttpRequest();		
-		xhr.open('PUT', `http://boards.${getRegion()}.leagueoflegends.com/api/myupdates`);
+		xhr.open('PUT', `https://boards.${getRegion()}.leagueoflegends.com/api/myupdates`);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 		xhr.onload = function() {
 			if (xhr.status === 200) {
