@@ -5,11 +5,7 @@ function onDocumentLoad() {
 
 	apply_i18n_to_popup();
 	
-	var bsg=browser.storage.sync.get({
-		updateDelay: 15,
-		enableNotifications: true,
-		region: "las"
-	});
+	var bsg=browser.storage.local.get(["updateDelay","enableNotifications","region: "]);
 	bsg.then( function(items) {
 		document.getElementById('updateDelay').value = items.updateDelay;
 		document.getElementById('enableNotifications').checked = items.enableNotifications;
@@ -39,7 +35,7 @@ function save_options() {
 	
 	//checkPermissions(region);
 	
-	var ss=browser.storage.sync.set({
+	var ss=browser.storage.local.set({
 		updateDelay: updateDelay,
 		enableNotifications: enableNotifications,
 		region: region

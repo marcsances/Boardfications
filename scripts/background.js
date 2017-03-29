@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		var xhr = new XMLHttpRequest();
 		
 		xhr.open("GET", `https://boards.${getRegion()}.leagueoflegends.com/${language}/myupdates.json?show=unread`, true);
+		//console.log(`https://boards.${getRegion()}.leagueoflegends.com/${language}/myupdates.json?show=unread`);
 		xhr.timeout = 5000;
 		xhr.onreadystatechange = function() {
 		  if (xhr.readyState == 4) {
@@ -139,13 +140,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 
 	var getOptions = function () {
-		var gs=browser.storage.sync.get({
-    		updateDelay: 10,
-    		enableNotifications: true,
-			region: "las"
-  		}
-  		);
+		console.log("getOptions");
+		var gs=browser.storage.local.get(["updateDelay","enableNotifications","region"]);
 		  gs.then(function(items) {
+			  console.log("then" + items);
     		options['updateDelay'] = items.updateDelay;
     		options['enableNotifications'] = items.enableNotifications;
 			options['region'] = items.region;
