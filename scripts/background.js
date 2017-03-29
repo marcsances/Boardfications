@@ -140,10 +140,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 
 	var getOptions = function () {
-		console.log("getOptions");
 		var gs=browser.storage.local.get(["updateDelay","enableNotifications","region"]);
 		  gs.then(function(items) {
-			  console.log("then" + items);
     		options['updateDelay'] = items.updateDelay;
     		options['enableNotifications'] = items.enableNotifications;
 			options['region'] = items.region;

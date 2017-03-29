@@ -14,6 +14,9 @@
 	"main_developer": {
 		"message": "Developed by"
 	},
+	"ported": {
+		"message": "Firefox port by"
+	},
 	"main_in": {
 		"message": "in"
 	},
