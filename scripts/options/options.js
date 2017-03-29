@@ -5,15 +5,16 @@ function onDocumentLoad() {
 
 	apply_i18n_to_popup();
 	
-	chrome.storage.sync.get({
+	var bsg=browser.storage.sync.get({
 		updateDelay: 15,
 		enableNotifications: true,
 		region: "las"
-	}, function(items) {
+	});
+	bsg.then( function(items) {
 		document.getElementById('updateDelay').value = items.updateDelay;
 		document.getElementById('enableNotifications').checked = items.enableNotifications;
 		document.getElementById('region').value = items.region
-	});	
+	},function(){})	
 }
 document.addEventListener('DOMContentLoaded', onDocumentLoad);
 
@@ -36,47 +37,52 @@ function save_options() {
 	  	}
 	}
 	
-	checkPermissions(region);
+	//checkPermissions(region);
 	
-	chrome.storage.sync.set({
+	var ss=browser.storage.sync.set({
 		updateDelay: updateDelay,
 		enableNotifications: enableNotifications,
 		region: region
-	}, function(region) {
+	});
+	ss.then(function(region) {
 		var status = document.getElementById('status');
-		status.textContent = chrome.i18n.getMessage("options_saved");
+		status.textContent = browser.i18n.getMessage("options_saved");
 		setTimeout(function() {
-			chrome.tabs.getCurrent(function (tab) {chrome.tabs.remove(tab.id)});
-			chrome.extension.getBackgroundPage().reloadExtension();
+			browser.tabs.getCurrent(function (tab) {browser.tabs.remove(tab.id)});
+			browser.extension.getBackgroundPage().reloadExtension();
 			status.textContent = '';
 		}, 750);
-	});
+	},function() {});
 }
 
 document.getElementById('save').addEventListener('click', save_options);
 
 function checkPermissions(region) {
-	chrome.permissions.contains({
+	/*var bp=browser.permissions.contains({
 	  origins: [`https://boards.${region}.leagueoflegends.com/`]
-	}, function (permission) {
+	});
+	bp.then(function (permission) {
 		if (!permission) {
 			askForPermissions(region);
 		}
-	});
+	},function(){});
+	not yet implemented in current firefox versions*/
 }
 
 function askForPermissions(region) {
-	chrome.permissions.request({
+	/*var br=browser.permissions.request({
 		origins: [`https://boards.${region}.leagueoflegends.com/`]
-		}, function(granted) {
+		});
+	br.then(function(granted) {
 			if (!granted) {
-				var message = chrome.i18n.getMessage("options_permissions")
+				var message = browser.i18n.getMessage("options_permissions")
 				if (confirm(message)) {
 					checkPermissions(region);
 				}
 			}
-		}
-	);
+		}, function(){});
+		
+		not yet implemented in current firefox versions*/
 }
 
 function apply_i18n_to_popup (){
@@ -85,7 +91,7 @@ function apply_i18n_to_popup (){
 	for (var i=0, max=objects.length; i < max; i++) {
 		var object = objects[i];
 		if (object && object.getAttribute("data-i18n") == "true") {
-			var message = chrome.i18n.getMessage(object.innerHTML.trim()); message = (message == "" && object.innerText || message)
+			var message = browser.i18n.getMessage(object.innerHTML.trim()); message = (message == "" && object.innerText || message)
 			object.innerText = message;
 		}
 	}

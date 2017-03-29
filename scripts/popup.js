@@ -3,9 +3,9 @@ document.getElementsByTagName("head")[0].appendChild(linkTag);
 
 setTimeout(function(){apply_i18n_to_popup(); document.body.style = "visibility:visible"}, 50)
 
-var notifications = chrome.extension.getBackgroundPage().notifications;
-var champions = chrome.extension.getBackgroundPage().champions;
-var getRegion = function () { return chrome.extension.getBackgroundPage().getRegion(); };
+var notifications = browser.extension.getBackgroundPage().notifications;
+var champions = browser.extension.getBackgroundPage().champions;
+var getRegion = function () { return browser.extension.getBackgroundPage().getRegion(); };
 
 if ( Object.keys(notifications).length > 0) {
 	
@@ -29,8 +29,8 @@ if ( Object.keys(notifications).length > 0) {
 			
 			var avatar = isRioter && `/images/riot_fist.png` || `https://avatar.leagueoflegends.com/${getRegion()}/${encodeURIComponent(profile_sn)}.png`;
 			var fontcolor = isRioter && `<font color=#ae250f> ${profile_sn} </font>` || profile_sn;
-			var gotocomment = chrome.i18n.getMessage("main_gtc");
-			var _in = chrome.i18n.getMessage("main_in");
+			var gotocomment = browser.i18n.getMessage("main_gtc");
+			var _in = browser.i18n.getMessage("main_in");
 			
 			source = source + 
 			`<div class='update-item' data-application-id=${board} data-discussion-id=${discussion} data-comment-id=${comment}>
@@ -72,10 +72,10 @@ if ( Object.keys(notifications).length > 0) {
 
 
 document.getElementById("settings").onclick = function() {
-  	if (chrome.runtime.openOptionsPage) {
-    		chrome.runtime.openOptionsPage();
+  	if (browser.runtime.openOptionsPage) {
+    		browser.runtime.openOptionsPage();
   	} else {
-    		window.open(chrome.runtime.getURL('options.html'));
+    		window.open(browser.runtime.getURL('options.html'));
   	}
 };
 
@@ -93,7 +93,7 @@ document.getElementById("clear").onclick = function() {
 		
 		comments[`comments[${board}][${discussion}][]`+" ".repeat(i+1)] = comment;
 	}	
-	chrome.extension.getBackgroundPage().setAsRead(comments);
+	browser.extension.getBackgroundPage().setAsRead(comments);
 	window.close();
 };
 
@@ -113,7 +113,7 @@ function apply_i18n_to_popup (){
 	for (var i=0, max=objects.length; i < max; i++) {
 		var object = objects[i];
 		if (object && object.getAttribute("data-i18n") == "true") {
-			var message = chrome.i18n.getMessage(object.innerHTML.trim());
+			var message = browser.i18n.getMessage(object.innerHTML.trim());
 			object.innerText = message;
 		}
 	}

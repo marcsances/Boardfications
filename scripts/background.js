@@ -5,7 +5,7 @@ options = [];
 	
 notification = false;
 
-language = chrome.i18n.getMessage("@@ui_locale").substr(0, 2);
+language = browser.i18n.getMessage("@@ui_locale").substr(0, 2);
 document.addEventListener("DOMContentLoaded", function() {
 	var updateNotifications = function () {
 		var xhr = new XMLHttpRequest();
@@ -92,14 +92,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			updateBadge("ERR", true)
 		}
 		if (!navigator.onLine) { xhr.ontimeout(); } else { xhr.send(); }
-		chrome.cookies.get( 
-			{ url : `https://boards.${getRegion()}.leagueoflegends.com`, name: "APOLLO_TOKEN"},
-			function (ck) {
+		var sc = browser.cookies.get( 
+			{ url : `https://boards.${getRegion()}.leagueoflegends.com`, name: "APOLLO_TOKEN"}
+		);
+		sc.then(function (ck) {
 				if ( ck ) {
 					cookie = ck.value
 				}
-			}
-		);
+			},function(){});
 		updateTimer();
 	};
 
@@ -109,15 +109,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	var updateBadge = function (text, error) {
 		if ( error ) {
-			chrome.browserAction.setBadgeBackgroundColor({ color: [255, 20, 20, 255] });
+			browser.browserAction.setBadgeBackgroundColor({ color: [255, 20, 20, 255] });
 		} else {
 			if ( text == "0" ) {
-				chrome.browserAction.setBadgeBackgroundColor({ color: [20, 20, 255, 255] });
+				browser.browserAction.setBadgeBackgroundColor({ color: [20, 20, 255, 255] });
 			} else {
-				chrome.browserAction.setBadgeBackgroundColor({ color: [0, 150, 0, 255] });
+				browser.browserAction.setBadgeBackgroundColor({ color: [0, 150, 0, 255] });
 			}
 		}
-		chrome.browserAction.setBadgeText({text: text});
+		browser.browserAction.setBadgeText({text: text});
 	};
 
 	var isArray = function (object) {
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	var submitNotification = function (message, url, _from) {
 		message = (message.length > 128 && message.substring(0, 128-3) + "..." || message)
-		title = chrome.i18n.getMessage("main_newnotif") + " " + _from
+		title = browser.i18n.getMessage("main_newnotif") + " " + _from
 		var options = {
 			title: title,
 			message: message,
@@ -135,41 +135,42 @@ document.addEventListener("DOMContentLoaded", function() {
 			iconUrl: "images/icon48.png",
 			isClickable: true
 		};
-		chrome.notifications.create("Boardfications_"+url, options);
+		browser.notifications.create("Boardfications_"+url, options);
 	};
 
 	var getOptions = function () {
-		chrome.storage.sync.get({
+		var gs=browser.storage.sync.get({
     		updateDelay: 10,
     		enableNotifications: true,
 			region: "las"
-  		}, function(items) {
+  		}
+  		);
+		  gs.then(function(items) {
     		options['updateDelay'] = items.updateDelay;
     		options['enableNotifications'] = items.enableNotifications;
 			options['region'] = items.region;
-  		   }
-  		);
+  		   },function(){});
 	};
 
-	chrome.notifications.onClicked.addListener( function (id) {
+	browser.notifications.onClicked.addListener( function (id) {
 		if ( id.search("Boardfications_") != -1 ) {
-			chrome.notifications.clear(id);
+			browser.notifications.clear(id);
 			var url = id.replace("Boardfications_", "");
 			var options = {
 				url: url,
 				active: true
 			};
-			chrome.tabs.create(options);
+			browser.tabs.create(options);
 		}
 	});
 
-	chrome.runtime.onInstalled.addListener( function (details) {
+	browser.runtime.onInstalled.addListener( function (details) {
 		if ( details.reason == "install" ) {
 			var options = {
 				url: "documents/options/options.html",
 				active: true
 			};
-			chrome.tabs.create(options);
+			browser.tabs.create(options);
 		}
 	});
 
@@ -200,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 	
 	reloadExtension = function () {
-		chrome.runtime.reload();
+		browser.runtime.reload();
 	}
 	updateBadge("...", true);
 	getOptions();
